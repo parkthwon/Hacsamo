@@ -7,7 +7,7 @@ using Photon.Pun;
 
 // 채팅
 // Input Field에서 채팅을 작성하면
-public class ChatManager : MonoBehaviour
+public class ChatManager : MonoBehaviourPun
 {
     public InputField chatInput;
 
@@ -46,21 +46,33 @@ public class ChatManager : MonoBehaviour
 
         print("Onsubmit : " + s);
 
+
+
+        // 닉네임을 붙여서 채팅 내용을 만든다.
+        string nameChat = "<color=#" + UnityEngine.ColorUtility.ToHtmlStringRGB(Color.blue) + ">" +
+            PhotonNetwork.NickName + "</color>" + " : " + s;
+
+
+        // RPC 함수로 모든 사람한테 채팅 내용 전달
+        photonView.RPC(nameof(AddChatRpc), RpcTarget.All, nameChat);
+
+    }
+
+    [PunRPC]
+    void AddChatRpc(string nameChat)
+    {
         // chat item을 만든다.
         var ci = Instantiate(chatItemFactory);
 
         // 만들어진 chat item의 부모를 content로한다.
         ci.transform.SetParent(rtContent);
 
-        // 닉네임을 붙여서 채팅 내용을 만든다.
-        string name = "<color=#" + UnityEngine.ColorUtility.ToHtmlStringRGB(Color.blue) + ">" +
-            PhotonNetwork.NickName + "</color>" + " : " + s;
-
         var item = ci.GetComponent<ChatItem>();
-        item.SetText(name);
+        item.SetText(nameChat);
 
         // chatInput값 초기화
         chatInput.text = "";
+        chatInput.ActivateInputField();
 
         // 값이 나타나려면? 한 프레임 쉬어가기 때문에 코루틴으로 한 프레임을 양보해준다.
         StartCoroutine(AutoScrollBottom());
