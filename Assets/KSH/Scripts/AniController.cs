@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class AniController : MonoBehaviour
+
+public class AniController : MonoBehaviourPun
 {
 
     [SerializeField]
@@ -10,19 +12,42 @@ public class AniController : MonoBehaviour
     [SerializeField]
     private Transform cameraArm;
 
+    // 카메라
+    public Transform cam;
+
+    // charactor controller
+    public CharacterController cc;
+
 
     Animator animator;
 
     // Start is called before the first frame update
     void Start()
     {
+
+        // 캐릭터 컨트롤러
+        cc = GetComponent<CharacterController>();
+
+
         animator = characterBody.GetComponent<Animator>();
+
+        // 내가 생성한 플레이어 일때만 카메라 활성화하기
+        if (photonView.IsMine)
+        {
+            cam.gameObject.SetActive(true);
+        }
 
     }
 
     // Update is called once per frame
     void Update()
     {
+        // 내가 생성한 플레이어가 아니면 update()를 탈출
+        if (photonView.IsMine == false)
+        {
+            return;
+        }
+
         LookAround();
         MoveCharacter();
         GestureCharacter();
