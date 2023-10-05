@@ -6,12 +6,20 @@ using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
+    public GameObject profileUI;
+
+    // 프로필 시작할 때 꺼두기
+    private void Start()
+    {
+        profileUI.SetActive(false);
+    }
+
     // 맵 2로 전환
-   public void OnClickMap2()
-   {
+    public void OnClickMap2()
+    {
         // Scene MAP2 로 변경할 것
         SceneManager.LoadScene("Map2");
-   }
+    }
 
     // 맵 1로 전환
     public void OnClickMap1()
@@ -24,5 +32,17 @@ public class UIManager : MonoBehaviour
     public void OnClickOut()
     {
         Application.Quit();
+    }
+
+    // profile UI 켜기
+    public void profileShow()
+    {
+        profileUI.SetActive(true);
+    }
+
+    // profile UI 끄기
+    public void profileHide() 
+    { 
+        profileUI.SetActive(false);
     }
 }
